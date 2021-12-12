@@ -24,7 +24,7 @@ jobs:
     - name: Build
       run: |
         cd usbboot
-        sed -i 's/$(CC)/gcc/' .\Makefile
+        sed -i 's/$(CC)/gcc/' Makefile
         make
     - name: Create installer
       uses: joncloud/makensis-action@v3.6
