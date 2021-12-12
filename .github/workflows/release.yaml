@@ -27,7 +27,7 @@ jobs:
       id: create_release
       uses: actions/create-release@master
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: $RPI_RELEASE_COMMIT
         release_name: Release $RPI_RELEASE_COMMIT
@@ -84,7 +84,7 @@ jobs:
         make
     - name: zip macos artifact
       run: |
-        zip -r macos usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
+        zip -r rpiboot-macOS-11 usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
     - name: upload rpiboot-macOS-11 artifact
       uses: actions/upload-artifact@v2
       with:
