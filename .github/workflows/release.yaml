@@ -12,7 +12,7 @@ jobs:
 
   upload-release:
     runs-on: ubuntu-20.04
-    needs: [build-macos-11, build-macos-10-15, build-linux]
+    needs: [build-macos-11, build-macos-10-15, build-linux, build-windows]
 
     steps:
     - uses: actions/checkout@v1
@@ -67,6 +67,16 @@ jobs:
         asset_path: ./uploads/rpiboot-linux.zip
         asset_name: rpiboot-linux.zip
         asset_content_type: application/zip   
+    - name: upload windows
+      id: upload-windows
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/rpiboot_setup.exe
+        asset_name: rpiboot_setup.exe
+        asset_content_type: application/octet-stream 
 
 
   build-macos-11:
@@ -136,3 +146,33 @@ jobs:
       with:
         name: uploads
         path: rpiboot-linux.zip
+
+  build-windows:
+
+    runs-on: windows-2019
+
+    steps:
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: cmake gcc-core gcc-g++ libusb1.0-devel libusb1.0 zip
+    - name: Clone
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot 
+    - name: Build
+      run: |
+        cd usbboot
+        sed -i 's/$(CC)/gcc/' .\Makefile
+        make
+    - name: Create installer
+      run: |
+        choco install nsis
+        cd usbboot
+        cp -r "C:\Program Files (x86)\NSIS" .
+        NSIS/makensis /v2 win32/install_script.nsi
+    - name: upload windows artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: uploads
+        path: usbboot/win32/rpiboot_setup.exe
