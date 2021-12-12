@@ -29,8 +29,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ $RPI_RELEASE_COMMIT }}
-        release_name: Release ${{ $RPI_RELEASE_COMMIT }}
+        tag_name: ${{ env.RPI_RELEASE_COMMIT }}
+        release_name: Release ${{ env.RPI_RELEASE_COMMIT }}
         draft: false
         prerelease: false   
     - name: download artifacts
