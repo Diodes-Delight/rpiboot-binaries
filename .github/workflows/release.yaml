@@ -38,7 +38,7 @@ jobs:
       with:
         name: uploads    
     - name: upload macos 11
-      id: upload-macos 
+      id: upload-macos-11 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
         asset_name: rpiboot-macOS-11.zip
         asset_content_type: application/zip  
     - name: upload macos 10
-      id: upload-macos 
+      id: upload-macos-10 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
