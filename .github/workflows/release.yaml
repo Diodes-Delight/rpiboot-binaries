@@ -91,7 +91,7 @@ jobs:
         name: uploads
         path: rpiboot-macOS-11.zip       
 
-    build-macos-10-15:
+  build-macos-10-15:
 
     runs-on: macOS-10.15
 
