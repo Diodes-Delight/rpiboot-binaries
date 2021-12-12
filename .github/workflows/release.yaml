@@ -10,9 +10,68 @@ on:
 
 jobs:   
 
-  build-macos:
+upload-release:
 
-    runs-on: macos-latest
+    runs-on: ubuntu-20.04
+    needs: [build-macos-11, build-macos-10-15, build-linux]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: set release env
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot
+        cd usbboot
+        echo 'RPI_RELEASE_COMMIT<<EOF' >> $GITHUB_ENV
+        git log --format="%h" -n 1 >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
+    - name: create release
+      id: create_release
+      uses: actions/create-release@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      with:
+        tag_name: $RPI_RELEASE_COMMIT
+        release_name: Release $RPI_RELEASE_COMMIT
+        draft: false
+        prerelease: false   
+    - name: download artifacts
+      uses: actions/download-artifact@v1
+      with:
+        name: uploads    
+    - name: upload macos 11
+      id: upload-macos 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/rpiboot-macOS-11.zip
+        asset_name: rpiboot-macOS-11.zip
+        asset_content_type: application/zip  
+    - name: upload macos 10
+      id: upload-macos 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/rpiboot-macOS-10_15.zip
+        asset_name: rpiboot-macOS-10_15.zip
+        asset_content_type: application/zip
+    - name: upload linux
+      id: upload-linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./uploads/rpiboot-linux.zip
+        asset_name: rpiboot-linux.zip
+        asset_content_type: application/zip   
+
+
+  build-macos-11:
+    runs-on: macos-11
 
     steps:
     - name: Clone
@@ -26,12 +85,35 @@ jobs:
         make
     - name: zip macos artifact
       run: |
-        zip -r macos usbboot 
-    - name: upload macos artifact
+        zip -r macos usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
+    - name: upload rpiboot-macOS-11 artifact
       uses: actions/upload-artifact@v2
       with:
         name: uploads
-        path: macos.zip                    
+        path: rpiboot-macOS-11.zip       
+
+    build-macos-10-15:
+
+    runs-on: macOS-10.15
+
+    steps:
+    - name: Clone
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot 
+    - name: Install libusb
+      run: brew install libusb
+    - name: Build
+      run: |
+        cd usbboot
+        make
+    - name: zip macos artifact
+      run: |
+        zip -r rpiboot-macOS-10_15 usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license
+    - name: upload macos 10.15 artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: uploads
+        path: rpiboot-macOS-10_15.zip                
 
   build-linux:
 
@@ -49,9 +131,9 @@ jobs:
         make
     - name: zip linux artifact
       run: |
-        zip -r linux usbboot  
+        zip -r rpiboot-linux usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license  
     - name: upload linux artifact
       uses: actions/upload-artifact@v2
       with:
         name: uploads
-        path: linux.zip
+        path: rpiboot-linux.zip
