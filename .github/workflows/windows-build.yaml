@@ -33,6 +33,7 @@ jobs:
         NSIS/makensis /v2 win32/install_script.nsi
     - name: zip windows artifact
       run: |
+        dir
         zip -r rpiboot-windows usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license usbboot/win32
     - name: upload windows artifact
       uses: actions/upload-artifact@v2
