@@ -27,9 +27,11 @@ jobs:
         sed -i 's/$(CC)/gcc/' Makefile
         make
     - name: Create installer
-      uses: joncloud/makensis-action@v3.6
-      with:
-        script-file: "usbboot/win32/install_script.nsi"
+      run: |
+        choco install nsis
+        cd usbboot
+        cp -r "C:\Program Files (x86)\NSIS" .
+        NSIS/makensis /v2 win32/install_script.nsi
     - name: zip windows artifact
       run: |
         zip -r rpiboot-windows usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license usbboot/win32
