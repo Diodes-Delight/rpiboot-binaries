@@ -19,13 +19,11 @@ jobs:
       run: |
         git clone --depth=1 https://github.com/raspberrypi/usbboot 
     - name: Build
-      shell: C:\tools\cygwin\bin\bash.exe --login -o igncr '{0}'
       run: |
         cd usbboot
-        sed -i 's/$(CC)/gcc/' Makefile
+        sed -i 's/$(CC)/gcc/' .\Makefile
         make
     - name: Create installer
-      shell: C:\tools\cygwin\bin\bash.exe --login -o igncr '{0}'
       run: |
         choco install nsis
         cd usbboot
