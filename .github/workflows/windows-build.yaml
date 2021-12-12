@@ -1,0 +1,36 @@
+name: Build windows binaries
+
+on:
+  push:
+
+jobs:     
+  
+  build-windows:
+
+    runs-on: windows-2019
+
+    steps:
+    - name: Set up Cygwin
+      uses: egor-tensin/setup-cygwin@v3
+      with:
+        platform: x64
+        packages: cmake gcc gcc-g++ libusb-1.0-dev zip
+    - name: Clone
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot 
+    - name: Build
+      run: |
+        cd usbboot
+        make
+    - name: Create installer
+      uses: joncloud/makensis-action@v3.6
+      with:
+        script-file: "usbboot/win32/install_script.nsi"
+    - name: zip windows artifact
+      run: |
+        zip -r rpiboot-windows usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license usbboot/win32
+    - name: upload windows artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: uploads
+        path: rpiboot-windows.zip

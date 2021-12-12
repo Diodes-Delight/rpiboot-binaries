@@ -6,7 +6,6 @@ on:
     - cron: "0 8 * * *"
   # for manual testing
   workflow_dispatch:
-  push:
 
 jobs:   
 
@@ -136,3 +135,4 @@ jobs:
       with:
         name: uploads
         path: rpiboot-linux.zip
+
