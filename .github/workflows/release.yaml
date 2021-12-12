@@ -1,0 +1,57 @@
+name: Build release binaries
+
+on:
+  schedule:
+    # https://crontab.guru
+    - cron: "0 8 * * *"
+  # for manual testing
+  workflow_dispatch:
+  push:
+
+jobs:   
+
+  build-macos:
+
+    runs-on: macos-latest
+
+    steps:
+    - name: Clone
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot 
+    - name: Install libusb
+      run: brew install libusb
+    - name: Build
+      run: |
+        cd usbboot
+        make
+    - name: zip macos artifact
+      run: |
+        zip -r macos usbboot 
+    - name: upload macos artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: uploads
+        path: macos.zip                    
+
+  build-linux:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Clone
+      run: |
+        git clone --depth=1 https://github.com/raspberrypi/usbboot 
+    - name: Install libusb
+      run: sudo apt install libusb-1.0-0-dev
+    - name: Build
+      run: |
+        cd usbboot
+        make
+    - name: zip linux artifact
+      run: |
+        zip -r linux usbboot  
+    - name: upload linux artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: uploads
+        path: linux.zip
