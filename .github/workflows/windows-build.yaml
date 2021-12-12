@@ -17,12 +17,12 @@ jobs:
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
-        packages: cmake gcc-core gcc-g++ libusb-1.0-dev zip
+        packages: cmake gcc-core gcc-g++ libusb1.0-devel libusb1.0 zip
     - name: Clone
       run: |
         git clone --depth=1 https://github.com/raspberrypi/usbboot 
     - name: Build
-      run: 
+      run: |
         cd usbboot
         make
     - name: Create installer
