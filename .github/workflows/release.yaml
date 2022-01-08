@@ -1,9 +1,9 @@
 name: Build release binaries
 
 on:
-  schedule:
+  #schedule:
     # https://crontab.guru
-    - cron: "0 8 * * *"
+  #  - cron: "0 8 * * *"
   # for manual testing
   workflow_dispatch:
   push:
