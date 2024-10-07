@@ -12,7 +12,7 @@ jobs:
 
   upload-release:
     runs-on: ubuntu-20.04
-    needs: [build-macos-11, build-macos-10-15, build-linux, build-windows]
+    needs: [build-macos-latest, build-linux, build-windows]
 
     steps:
     - uses: actions/checkout@v1
@@ -37,26 +37,16 @@ jobs:
       uses: actions/download-artifact@v1
       with:
         name: uploads    
-    - name: upload macos 11
-      id: upload-macos-11 
+    - name: upload macos
+      id: upload-macos-latest 
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/rpiboot-macOS-11.zip
-        asset_name: rpiboot-macOS-11.zip
+        asset_path: ./uploads/rpiboot-macOS-latest.zip
+        asset_name: rpiboot-macOS-latest.zip
         asset_content_type: application/zip  
-    - name: upload macos 10
-      id: upload-macos-10 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/rpiboot-macOS-10_15.zip
-        asset_name: rpiboot-macOS-10_15.zip
-        asset_content_type: application/zip
     - name: upload linux
       id: upload-linux
       uses: actions/upload-release-asset@v1
@@ -79,8 +69,8 @@ jobs:
         asset_content_type: application/octet-stream 
 
 
-  build-macos-11:
-    runs-on: macos-11
+  build-macos-latest:
+    runs-on: macos-latest
 
     steps:
     - name: Clone
@@ -94,35 +84,12 @@ jobs:
         make
     - name: zip macos artifact
       run: |
-        zip -r rpiboot-macOS-11 usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
-    - name: upload rpiboot-macOS-11 artifact
+        zip -r rpiboot-macOS-latest usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
+    - name: upload rpiboot-macOS-latest artifact
       uses: actions/upload-artifact@v2
       with:
         name: uploads
-        path: rpiboot-macOS-11.zip       
-
-  build-macos-10-15:
-
-    runs-on: macOS-10.15
-
-    steps:
-    - name: Clone
-      run: |
-        git clone --depth=1 https://github.com/raspberrypi/usbboot 
-    - name: Install libusb
-      run: brew install libusb
-    - name: Build
-      run: |
-        cd usbboot
-        make
-    - name: zip macos artifact
-      run: |
-        zip -r rpiboot-macOS-10_15 usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license
-    - name: upload macos 10.15 artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: uploads
-        path: rpiboot-macOS-10_15.zip                
+        path: rpiboot-macOS-latest.zip                  
 
   build-linux:
 
