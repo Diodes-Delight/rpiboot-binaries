@@ -54,8 +54,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/rpiboot-linux.zip
-        asset_name: rpiboot-linux.zip
+        asset_path: ./uploads/rpiboot-ubuntu-24.04.zip
+        asset_name: rpiboot-ubuntu-24.04.zip
         asset_content_type: application/zip   
     - name: upload windows
       id: upload-windows
@@ -88,12 +88,12 @@ jobs:
     - name: upload rpiboot-macOS-latest artifact
       uses: actions/upload-artifact@v4
       with:
-        name: uploads
+        name: uploads-macos
         path: rpiboot-macOS-latest.zip                  
 
   build-linux:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Clone
@@ -111,8 +111,8 @@ jobs:
     - name: upload linux artifact
       uses: actions/upload-artifact@v4
       with:
-        name: uploads
-        path: rpiboot-linux.zip
+        name: uploads-ubuntu-24-04
+        path: rpiboot-ubuntu-24.04.zip
 
   build-windows:
 
@@ -141,5 +141,5 @@ jobs:
     - name: upload windows artifact
       uses: actions/upload-artifact@v4
       with:
-        name: uploads
+        name: uploads-windows
         path: usbboot/win32/rpiboot_setup.exe
