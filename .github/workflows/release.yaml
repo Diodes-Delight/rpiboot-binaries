@@ -34,9 +34,10 @@ jobs:
         draft: false
         prerelease: false   
     - name: download artifacts
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v4
       with:
-        name: uploads    
+        path: uploads*
+        merge-multiple: true
     - name: upload macos
       id: upload-macos-latest 
       uses: actions/upload-release-asset@v1
@@ -54,8 +55,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./uploads/rpiboot-ubuntu-24.04.zip
-        asset_name: rpiboot-ubuntu-24.04.zip
+        asset_path: ./uploads/rpiboot-ubuntu-24-04.zip
+        asset_name: rpiboot-ubuntu-24-04.zip
         asset_content_type: application/zip   
     - name: upload windows
       id: upload-windows
@@ -107,12 +108,12 @@ jobs:
         make
     - name: zip linux artifact
       run: |
-        zip -r rpiboot-linux usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license  
+        zip -r rpiboot-ubuntu-24-04 usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license  
     - name: upload linux artifact
       uses: actions/upload-artifact@v4
       with:
         name: uploads-ubuntu-24-04
-        path: rpiboot-ubuntu-24.04.zip
+        path: rpiboot-ubuntu-24-04.zip
 
   build-windows:
 
