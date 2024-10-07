@@ -86,7 +86,7 @@ jobs:
       run: |
         zip -r rpiboot-macOS-latest usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license 
     - name: upload rpiboot-macOS-latest artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: uploads
         path: rpiboot-macOS-latest.zip                  
@@ -109,7 +109,7 @@ jobs:
       run: |
         zip -r rpiboot-linux usbboot/rpiboot usbboot/msd usbboot/Readme.md usbboot/license  
     - name: upload linux artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: uploads
         path: rpiboot-linux.zip
@@ -139,7 +139,7 @@ jobs:
         cp -r "C:\Program Files (x86)\NSIS" .
         NSIS/makensis /v2 win32/install_script.nsi
     - name: upload windows artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: uploads
         path: usbboot/win32/rpiboot_setup.exe
